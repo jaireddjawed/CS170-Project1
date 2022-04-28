@@ -10,7 +10,7 @@ class Startup(object):
         # default matrix
         eightPuzzleMatrix.append(["2", "4", "7"])
         eightPuzzleMatrix.append(["5", "1", "3"])
-        eightPuzzleMatrix.append(["9", "0", "8"])
+        eightPuzzleMatrix.append(["9", "0", "6"])
 
         break
       elif puzzleChoice == "2":
@@ -18,7 +18,7 @@ class Startup(object):
 
         for i in range(3):
           try:
-            row = input('Enter row ' + str(i+1) + ', use spaces or tabs between numbers: ')
+            row = input('Enter row ' + str(i+1) + ', use spaces between numbers: ')
             eightPuzzleMatrix.append(row.split(' '))
           except:
             print('There was an error in your matrix formatting. Please restart the program and try again.')
