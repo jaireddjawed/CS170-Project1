@@ -1,3 +1,5 @@
+from Problem import Problem
+
 class Startup(object):
   def main(self):
     print('Welcome to jjawe001\'s 8 puzzle solver.\n')
@@ -8,9 +10,9 @@ class Startup(object):
     while True:
       if puzzleChoice == "1":
         # default matrix
-        eightPuzzleMatrix.append(["2", "4", "7"])
-        eightPuzzleMatrix.append(["5", "1", "3"])
-        eightPuzzleMatrix.append(["9", "0", "6"])
+        eightPuzzleMatrix.append(["1", "2", "3"])
+        eightPuzzleMatrix.append(["4", "8", "0"])
+        eightPuzzleMatrix.append(["7", "6", "5"])
 
         break
       elif puzzleChoice == "2":
@@ -27,14 +29,17 @@ class Startup(object):
       else:
         puzzleChoice = input('That choice was not valid. Please type "1" to use a default puzzle or "2" to enter your own puzzle: ')
 
-    algoChoice = input('Select your choice of algorithm by entering the number associated: ')
-
+    print('\n')
     print('1) Uniform Cost Search')
     print('2) A* with the Misplaced Tile Heuristic')
     print('3) A* with the Eucledian Distance Heuristic')
+    print('\n')
+
+    algoChoice = input('Select your choice of algorithm by entering the number associated: ')
 
     while True:
       if algoChoice == "1":
+        Problem(eightPuzzleMatrix).uniformCostSearch()
         break
       elif algoChoice == "2":
         break
