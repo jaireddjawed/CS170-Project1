@@ -7,9 +7,9 @@ class Problem(object):
   def __init__(self, initialState):
     self.initalState = initialState
     self.goalState = [
-      ['0', '1', '2'],
-      ['3', '4', '5'],
-      ['6', '7', '8']
+      ['1', '2', '3'],
+      ['4', '5', '6'],
+      ['7', '8', '0']
     ]
 
     # start time of the algorithm
@@ -39,7 +39,7 @@ class Problem(object):
   def euclideanSearch(self):
     self.euclidean = True
     self.graphSearch()
-
+    
   def graphSearch(self):
     # queue to visit the nodes in order
     frontier = PriorityQueue()
@@ -80,13 +80,30 @@ class Problem(object):
 
       # go through all of the neighbors and add them to the frontier if they haven't yet been visited
       for neighbor in neighbors:
+        if self.uniform:
+          # add the node to the frontier if we haven't visited it yet and it isn't already in the frontier
+          if not neighbor in self.alreadyInFrontier:
+            neighbor.setFn(currentNode.getGn())
+            frontier.put(neighbor)
+            self.alreadyInFrontier.add(neighbor)
+            numNodesExpanded += 1
+        
+        if self.misplaced:
+          if not neighbor in self.alreadyInFrontier:
+            misplacedCount = 0
 
-        # add the node to the frontier if we haven't visited it yet and it isn't already in the frontier
-        if not neighbor in self.alreadyInFrontier:
-          neighbor.setFn(currentNode.getGn())
-          frontier.put(neighbor)
-          self.alreadyInFrontier.add(neighbor)
-          numNodesExpanded += 1
+            for i in range(len(neighbor.getGrid())):
+              for j in range(len(neighbor.getGrid()[0])):
+                if neighbor.getGrid()[i][j] != self.goalState[i][j]:
+                  misplacedCount += 1
+
+            neighbor.setFn(misplacedCount)
+            frontier.put(neighbor)
+            self.alreadyInFrontier.add(neighbor)
+            numNodesExpanded += 1
+
+          if self.euclidean:
+            pass
 
       if frontier.qsize() > maxFrontierSize:
           maxFrontierSize = frontier.qsize()
