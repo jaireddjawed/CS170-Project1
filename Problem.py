@@ -1,4 +1,4 @@
-from queue import PriorityQueue, Queue
+from queue import PriorityQueue
 from time import time
 from copy import deepcopy
 from Node import Node
@@ -7,17 +7,38 @@ class Problem(object):
   def __init__(self, initialState):
     self.initalState = initialState
     self.goalState = [
-      ['1', '2', '3'],
-      ['4', '5', '6'],
-      ['7', '8', '0']
+      ['0', '1', '2'],
+      ['3', '4', '5'],
+      ['6', '7', '8']
     ]
+
+    # start time of the algorithm
     self.startTime = time()
 
+    # will hold all of the nodes that we've already visited
+    self.visited = set()
+
+    # will hold all of the nodes that are currently in the frontier already
+    self.alreadyInFrontier = set()
+
+    self.uniform = False
+    self.misplaced = False
+    self.euclidean = False
+
+  def setGoalState(self, goalState):
+    self.goalState = goalState
+
   def uniformCostSearch(self):
+    self.uniform = True
     self.graphSearch()
 
-  def misplacedTileHeuristic(self):
-    pass
+  def misplacedSearch(self):
+    self.misplaced = True
+    self.graphSearch()
+
+  def euclideanSearch(self):
+    self.euclidean = True
+    self.graphSearch()
 
   def graphSearch(self):
     # queue to visit the nodes in order
@@ -27,17 +48,10 @@ class Problem(object):
     firstNode = Node(self.initalState)
     frontier.put(firstNode)
 
-    # keeps track of the nodes that have already been visited
-    visited = set()
-
-    # set that keeps track of the nodes that are currently within the frontier
-    inFrontier = set()
-
-    # current max frontier size is 1 because of the firstNode
     maxFrontierSize = 1
+    numNodesExpanded = 1
 
     while True:
-      # the search has failed if the frontier is empty
       if frontier.qsize() == 0:
         print('Failure!\n')
         break
@@ -45,25 +59,22 @@ class Problem(object):
       currentNode = frontier.get()
 
       # print the current node
-      print('The best state to expand with a g(n) = {} and h(n) = 0 is ... '.format(currentNode.getGn()))
+      print('The best state to expand with a g(n) = {} and h(n) = {} is ... '.format(currentNode.getGn(), currentNode.getHn()))
       currentNode.print()
 
-      # check if the currentNode is a goal state
       if currentNode.getGrid() == self.goalState:
         endTime = time()
         timeToRun = endTime - self.startTime
 
         print('Goal!')
-        print('The maximum number of nodes at any one time: ' + str(maxFrontierSize) + '.')
+        print('Number of nodes expanded: {}.'.format(numNodesExpanded))
+        print('The maximum number of nodes in the queue at any one time: ' + str(maxFrontierSize) + '.')
         print('Depth of the goal node: {}.'.format(currentNode.getGn()))
         print('Time to finish: {} second(s).'.format(timeToRun))
         break
 
-      # mark the current node as visited
-      visited.add(currentNode)
-
-      # remove the node from the frontier
-      inFrontier.discard(currentNode)
+      # remove the node from the frontier set
+      self.alreadyInFrontier.discard(currentNode)
 
       neighbors = self.expandNodes(currentNode)
 
@@ -71,13 +82,14 @@ class Problem(object):
       for neighbor in neighbors:
 
         # add the node to the frontier if we haven't visited it yet and it isn't already in the frontier
-        if not neighbor in visited and not neighbor in inFrontier:
+        if not neighbor in self.alreadyInFrontier:
           neighbor.setFn(currentNode.getGn())
           frontier.put(neighbor)
-          inFrontier.add(neighbor)
+          self.alreadyInFrontier.add(neighbor)
+          numNodesExpanded += 1
 
       if frontier.qsize() > maxFrontierSize:
-        maxFrontierSize = frontier.qsize()
+          maxFrontierSize = frontier.qsize()
 
   def expandNodes(self, currentNode):
     neighbors = []
@@ -90,31 +102,43 @@ class Problem(object):
       temp = deepcopy(grid)
       temp[i][j], temp[i-1][j] = temp[i-1][j], temp[i][j]
       tempNode = Node(temp)
-      tempNode.setGn(currentNode.getGn() + 1)
-      neighbors.append(tempNode)
+
+      if not tempNode in self.visited:
+        self.visited.add(tempNode)
+        tempNode.setGn(currentNode.getGn() + 1)
+        neighbors.append(tempNode)
 
     # check if a neighbor below the currentNode exists
     if (i+1) < len(grid):
       temp = deepcopy(grid)
       temp[i][j], temp[i+1][j] = temp[i+1][j], temp[i][j]
       tempNode = Node(temp)
-      tempNode.setGn(currentNode.getGn() + 1)
-      neighbors.append(tempNode)
+
+      if not tempNode in self.visited:
+        self.visited.add(tempNode)
+        tempNode.setGn(currentNode.getGn() + 1)
+        neighbors.append(tempNode)
 
     # to the left
     if (j-1) >= 0:
       temp = deepcopy(grid)
       temp[i][j], temp[i][j-1] = temp[i][j-1], temp[i][j]
       tempNode = Node(temp)
-      tempNode.setGn(currentNode.getGn() + 1)
-      neighbors.append(tempNode)
+
+      if not tempNode in self.visited:
+        self.visited.add(tempNode)
+        tempNode.setGn(currentNode.getGn() + 1)
+        neighbors.append(tempNode)
 
     # to the right
     if (j+1) < len(grid[0]):
       temp = deepcopy(grid)
       temp[i][j], temp[i][j+1] = temp[i][j+1], temp[i][j]
       tempNode = Node(temp)
-      tempNode.setGn(currentNode.getGn() + 1)
-      neighbors.append(tempNode)
+
+      if not tempNode in self.visited:
+        self.visited.add(tempNode)
+        tempNode.setGn(currentNode.getGn() + 1)
+        neighbors.append(tempNode)
 
     return neighbors
