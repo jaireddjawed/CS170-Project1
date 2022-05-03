@@ -152,10 +152,12 @@ class Problem(object):
             while num < totalNumsInGrid:
               for i in range(len(neighbor.getGrid())):
                   for j in range(len(neighbor.getGrid()[i])):
+                      # get the placement of the number we're finding in the neighbor grid
                       if int(neighbor.getGrid()[i][j]) == num:
                         row = i
                         col = j
 
+                      # find where the number is placed within the goal state
                       if int(self.goalState[i][j]) == num:
                           goalRow = i
                           goalCol = j
