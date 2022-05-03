@@ -7,18 +7,21 @@ class Startup(object):
     puzzleChoice = input('Type "1" to use a default puzzle or "2" to enter your own puzzle: ')
     eightPuzzleMatrix = []
 
+    # used to make it simple to modify the 8 puzzle into another puzzle length
+    rowLength = 3
+
     while True:
       if puzzleChoice == "1":
         # default matrix
-        eightPuzzleMatrix.append(["1", "2", "3"])
-        eightPuzzleMatrix.append(["4", "8", "0"])
-        eightPuzzleMatrix.append(["7", "6", "5"])
+        eightPuzzleMatrix.append(['0', '1', '2'])
+        eightPuzzleMatrix.append(['4', '5', '3'])
+        eightPuzzleMatrix.append(['7', '8', '6'])
 
         break
       elif puzzleChoice == "2":
         print('Enter your puzzle, use a "0" to represent the blank.')
 
-        for i in range(3):
+        for i in range(rowLength):
           try:
             row = input('Enter row ' + str(i+1) + ', use spaces between numbers: ')
             eightPuzzleMatrix.append(row.split(' '))
