@@ -13,14 +13,17 @@ class Node(object):
           self.zero_i = i
           self.zero_j = j
 
-    # set fn and gn to 0 by default
+    # set f(n), g(n), and h(n) to 0 by default (so we don't have to set it for uniform cost search)
+    # because h(n) will be the same for all nodes with ucs
     self.fn = 0
     self.gn = 0
     self.hn = 0
 
+  # give each node it's unique value by providing its grid when using it as a variable
   def __repr__(self):
       return 'Node <{}>'.format(self.grid)
 
+  # we will order the nodes by f(n) value
   def __lt__(self, comparedNode):
     return self.fn < comparedNode.fn
 
@@ -30,6 +33,7 @@ class Node(object):
   def getZeroIndex(self):
     return (self.zero_i, self.zero_j)
 
+  # print out the grid and replace the 0 with a *
   def print(self):
     for i in range(len(self.grid)):
       row = ' '.join(self.grid[i]).replace('0', '*')
