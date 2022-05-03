@@ -42,8 +42,10 @@ class Startup(object):
         Problem(eightPuzzleMatrix).uniformCostSearch()
         break
       elif algoChoice == "2":
+        Problem(eightPuzzleMatrix).misplacedSearch()
         break
       elif algoChoice == "3":
+        Problem(eightPuzzleMatrix).euclideanSearch()
         break
       else:
         algoChoice = input('Your input was not valid. Select your choice of algorithm by entering the number associated: ')
